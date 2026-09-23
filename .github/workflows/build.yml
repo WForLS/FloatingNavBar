@@ -3,7 +3,7 @@ name: Build APK
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:   # 允许在网页上手动点"Run workflow"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,14 +16,19 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - uses: android-actions/setup-android@v3
+      - name: 安装 Android SDK 组件
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null
+
+      - name: 安装 Gradle
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip
+          unzip -q gradle-8.9-bin.zip
+          echo "$PWD/gradle-8.9/bin" >> "$GITHUB_PATH"
 
       - name: 编译 APK
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleRelease
-        env:
-          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+        run: gradle assembleRelease
 
       - name: 上传编译产物
         uses: actions/upload-artifact@v4
