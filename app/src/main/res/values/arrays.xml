@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 作用范围：所有应用 -->
+    <string-array name="xposed_scope">
+        <item>*</item>
+    </string-array>
+</resources>
